@@ -12,6 +12,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <!-- Latest compiled JavaScript -->
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="http://www.parsecdn.com/js/parse-1.6.14.min.js"></script>
+
     <script src="app.js"></script>
 </head>
 
@@ -21,12 +23,12 @@
         <div id="CR1" class="col-md-9">
             <h2>Chat Room 1</h2>
             <div id="chatbox"></div>
-            <textarea placeholder="Write your message here..."></textarea>
-            <div>submit</div>
+            <textarea name="message" placeholder="Write your message here..."></textarea>
+            <div id="submitButton">submit</div>
         </div>
         <div id="users" class="col-md-3">
             <h2>windbags</h2>
-            <div></div>
+            <div id="userList"></div>
             <footer>created with 💗 by Jun</footer>
         </div>
         <div>

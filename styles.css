@@ -17,13 +17,14 @@ h2{
 #CR1 #chatbox{
 		height: 50vh;
 		width: 100%;
-		color:red;
+		color:#414aad;
 		background-color: #DFE7FF;
 			border-style: groove;
+			overflow-y:scroll 
 
 }
 
-#CR1 div{
+#submitButton{
 		background-color: #8E9BFF;
 		height: 4vh;
 		width: 100%;	
@@ -46,9 +47,10 @@ textarea{
 #users div{
 		height: 70vh;
 		width: 100%;
-		color:red;
+		color:#414aad;
 		background-color: #DFE7FF;
-			border-style: groove;
+		border-style: groove;
+		font-size: 20px;
 
 
 }
@@ -62,4 +64,8 @@ footer{
 	padding-top: 10px;
 	font-family: cursive;
 
+}
+
+span{
+	color:#268e2b;
 }
