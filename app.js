@@ -1,26 +1,54 @@
 $(document).ready(function() {
     Parse.initialize("Tf4372ftWMso7asbmDNCyxvZ7AziMvpwjwNpCVo0", "874XxU6bvaMMOvtXrOINyhiDhmgHclyf6UzzZ4sn");
 
-    var username = prompt("WELCOME! WELCOME! WELCOME~", "Waht would you like to be called?") || "mysterious user";
+    function addMessageToChatBox(username, time, text) {
+        $("#chatbox").append("<br>" + time + " <span>" + username + "</span> said : <span>" + text + "</span>");
+    }
 
-    $("#userList").append("<span>" + username + "</span>");
-    $("#chatbox").append("<span>" + username + "</span>" + " joined the chat ...");
+    function clearMessageAfterSubmit() {
+        $('textarea').val('');
+    }
 
-    var user = new Parse.User();
+    var currentUsername = prompt("WELCOME! WELCOME! WELCOME~", "Waht would you like to be called?") || "mysterious user";
+
+    (function displayNewUserName() {
+        $("#userList").append("<span>" + currentUsername + "</span>");
+        $("#chatbox").append("<span>" + currentUsername + "</span>" + " joined the chat ...");
+    })()
+
+    function getNewMessage() {
+        var newMessage = {};
+        newMessage.text = $("textarea[name='message']").val();
+        newMessage.date = new Date();
+        newMessage.time = " @ " + newMessage.date.getHours() + ":" + newMessage.date.getMinutes() + ":" + newMessage.date.getSeconds();
+        return newMessage
+    }
+
+    function saveNewMessage(username, time, text) {
+        var Message = Parse.Object.extend("Message");
+        var message = new Message();
+
+        message.set('username', username);
+        message.set('text', text);
+        message.set('time', time);
+        message.save(null, {
+            success: function(user) {
+                // Execute any logic that should take place after the object is saved.
+                alert('New object created with objectId: ' + user.id);
+            },
+            error: function(user, error) {
+                // Execute any logic that should take place if the save fails.
+                // error is a Parse.Error with an error code and message.
+                alert('Failed to create new object, with error code: ' + error.message);
+            }
+        });
+
+    }
 
     $("#submitButton").click(function() {
-
-        var text = $("textarea[name='message']").val();
-        var date = new Date();
-        var time = " @ " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
-        $('textarea').val('');
-        $("#chatbox").append("<br>" + time + " <span>" + username + "</span> said : <span>" + text + "</span>");
-        user.set('username', username);
-        user.set('text', text);
-        user.set('time', date.getTime());
-        console.log(user);
-    })
-    
-
-    // user.set('',text)
+        var newMessage = getNewMessage();
+        addMessageToChatBox(currentUsername, newMessage.time, newMessage.text);
+        saveNewMessage(currentUsername, newMessage.time, newMessage.text)
+        clearMessageAfterSubmit();
+    });
 })
