@@ -1,11 +1,11 @@
 $(document).ready(function() {
     Parse.initialize("Tf4372ftWMso7asbmDNCyxvZ7AziMvpwjwNpCVo0", "874XxU6bvaMMOvtXrOINyhiDhmgHclyf6UzzZ4sn");
 
-    function addMessageToChatBox(username, time, text,divId) {
-        if(!divId){
-        $("#chatbox").append("<br>" + time + " <span>" + username + "</span> said : <span>" + text + "</span>");
-        }else{
-            $("#"+divId).append("<br>" + time + " <span>" + username + "</span> said : <span>" + text + "</span>");
+    function addMessageToChatBox(username, time, text, divId) {
+        if (!divId) {
+            $("#liveChat").append("<br>" + time + " <span>" + username + "</span> said : <span>" + text + "</span>");
+        } else {
+            $("#" + divId).append("<br>" + time + " <span>" + username + "</span> said : <span>" + text + "</span>");
         }
 
     }
@@ -15,10 +15,11 @@ $(document).ready(function() {
     }
 
     var currentUsername = prompt("WELCOME! WELCOME! WELCOME~", "Waht would you like to be called?") || "mysterious user";
-
+    var currenTime = new Date();
+// This needs to be fixed
     (function displayNewUserName() {
         $("#userList").append("<span>" + currentUsername + "</span>");
-        $("#chatbox").append("<span>" + currentUsername + "</span>" + " joined the chat ...");
+        $("#liveChat").append("<span>" + currentUsername + "</span>" + " joined the chat ...");
     })()
 
     function getNewMessage() {
@@ -52,12 +53,13 @@ $(document).ready(function() {
 
     $("#submitButton").click(function() {
         var newMessage = getNewMessage();
-        addMessageToChatBox(currentUsername, newMessage.time, newMessage.text);
         saveNewMessage(currentUsername, newMessage.time, newMessage.text)
         clearMessageAfterSubmit();
     });
 
     // this displays the past history
+
+
     $("#allChatHistory").click(function() {
         $(this).empty();
         var Message = Parse.Object.extend("Message");
@@ -66,8 +68,7 @@ $(document).ready(function() {
             success: function(messageList) {
                 for (var i = 0; i < messageList.length; i++) {
                     var singleMessage = messageList[i];
-                    addMessageToChatBox(singleMessage.get("username"), singleMessage.get("time"), singleMessage.get("text"),"pastHistory");
-
+                    addMessageToChatBox(singleMessage.get("username"), singleMessage.get("time"), singleMessage.get("text"), "pastHistory");
                 }
             },
             error: function(error) {
@@ -77,8 +78,38 @@ $(document).ready(function() {
     });
 
     // get new messages
-    
+    function getNewMessages() {
+        var Message = Parse.Object.extend("Message");
+        var query = new Parse.Query(Message);
+        query.greaterThan("createdAt", currenTime);
+
+        query.find({
+            success: function(messageList) {
+                for (var i = 0; i < messageList.length; i++) {
+                    var singleMessage = messageList[i];
+                    addMessageToChatBox(singleMessage.get("username"), singleMessage.get("time"), singleMessage.get("text"));
+
+                    currenTime = singleMessage.createdAt;
+
+                }
+            },
+            error: function(error) {
+                alert("Error: " + error.code + " " + error.message);
+            }
+        })
+
+        // query all the data after thisSessionStartTime
+
+        // display them 
+
+    }
+
+    var intervalID = window.setInterval(getNewMessages, 500);
 
 
 
-})
+    // keep doing this in every second
+
+
+
+});
