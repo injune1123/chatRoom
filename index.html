@@ -13,7 +13,6 @@
     <!-- Latest compiled JavaScript -->
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script src="http://www.parsecdn.com/js/parse-1.6.14.min.js"></script>
-
     <script src="app.js"></script>
 </head>
 
@@ -22,7 +21,14 @@
         <h1>Windbag</h1>
         <div id="CR1" class="col-md-9">
             <h2>Chat Room 1</h2>
-            <div id="chatbox"></div>
+            <div id="chatbox">
+                <div id="allChatHistory">Click <span>here</span> to show all past chatting history
+                    <br>
+                </div>
+                <div id="pastHistory">
+                    
+                </div>
+            </div>
             <textarea name="message" placeholder="Write your message here..."></textarea>
             <div id="submitButton">submit</div>
         </div>

@@ -24,6 +24,13 @@ h2{
 
 }
 
+#CR1 #chatbox span:first-child{
+	color: #FF00BF;	
+	font-style: italic;
+
+}
+
+
 #submitButton{
 		background-color: #8E9BFF;
 		height: 4vh;
@@ -66,6 +73,11 @@ footer{
 
 }
 
-span{
+span : not("#allChatHistory"){
 	color:#268e2b;
+}
+
+
+#pastHistory{
+	color:grey;
 }

@@ -1,8 +1,13 @@
 $(document).ready(function() {
     Parse.initialize("Tf4372ftWMso7asbmDNCyxvZ7AziMvpwjwNpCVo0", "874XxU6bvaMMOvtXrOINyhiDhmgHclyf6UzzZ4sn");
 
-    function addMessageToChatBox(username, time, text) {
+    function addMessageToChatBox(username, time, text,divId) {
+        if(!divId){
         $("#chatbox").append("<br>" + time + " <span>" + username + "</span> said : <span>" + text + "</span>");
+        }else{
+            $("#"+divId).append("<br>" + time + " <span>" + username + "</span> said : <span>" + text + "</span>");
+        }
+
     }
 
     function clearMessageAfterSubmit() {
@@ -20,7 +25,7 @@ $(document).ready(function() {
         var newMessage = {};
         newMessage.text = $("textarea[name='message']").val();
         newMessage.date = new Date();
-        newMessage.time = " @ " + newMessage.date.getHours() + ":" + newMessage.date.getMinutes() + ":" + newMessage.date.getSeconds();
+        newMessage.time = " @ " + newMessage.date.getMonth() + "/" + newMessage.date.getDate() + " " + newMessage.date.getHours() + ":" + newMessage.date.getMinutes() + ":" + newMessage.date.getSeconds();
         return newMessage
     }
 
@@ -34,7 +39,7 @@ $(document).ready(function() {
         message.save(null, {
             success: function(user) {
                 // Execute any logic that should take place after the object is saved.
-                alert('New object created with objectId: ' + user.id);
+                // alert('New object created with objectId: ' + user.id);
             },
             error: function(user, error) {
                 // Execute any logic that should take place if the save fails.
@@ -51,4 +56,29 @@ $(document).ready(function() {
         saveNewMessage(currentUsername, newMessage.time, newMessage.text)
         clearMessageAfterSubmit();
     });
+
+    // this displays the past history
+    $("#allChatHistory").click(function() {
+        $(this).empty();
+        var Message = Parse.Object.extend("Message");
+        var query = new Parse.Query(Message);
+        query.find({
+            success: function(messageList) {
+                for (var i = 0; i < messageList.length; i++) {
+                    var singleMessage = messageList[i];
+                    addMessageToChatBox(singleMessage.get("username"), singleMessage.get("time"), singleMessage.get("text"),"pastHistory");
+
+                }
+            },
+            error: function(error) {
+                alert("Error: " + error.code + " " + error.message);
+            }
+        })
+    });
+
+    // get new messages
+    
+
+
+
 })
