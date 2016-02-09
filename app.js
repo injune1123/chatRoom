@@ -196,7 +196,7 @@ $("#liveChat").append("<span>" + currentUsername + "</span>" + " joined the chat
         function(){
             updateUser();
             getNewMessages();
-        }, 500);
+        }, 2000);
 
 
 
