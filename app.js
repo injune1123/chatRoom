@@ -58,7 +58,11 @@ $(document).ready(function() {
     });
 
     // this displays the past history
-
+    $("textarea[name='message']").keypress(function(e) {
+        if (e.which === 13) {
+            $("#submitButton").click();
+        }
+    });
 
     $("#allChatHistory").click(function() {
         $(this).empty();
