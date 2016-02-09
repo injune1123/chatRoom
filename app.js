@@ -16,11 +16,95 @@ $(document).ready(function() {
 
     var currentUsername = prompt("WELCOME! WELCOME! WELCOME~", "Waht would you like to be called?") || "mysterious user";
     var currenTime = new Date();
+
+    //write curretUsername to CurrentUser table
+    var CurrentUser = Parse.Object.extend('CurrentUser');
+    var newUser = new CurrentUser();
+    newUser.set("name", currentUsername);
+    newUser.save();
+    
+    
+    
+    // a variable hold current number of user
+    var currentUserCounter = 0;
+    // a variable hold entertime
+    var userEnterTime;;
+    
+    
+
 // This needs to be fixed
-    (function displayNewUserName() {
-        $("#userList").append("<span>" + currentUsername + "</span>");
-        $("#liveChat").append("<span>" + currentUsername + "</span>" + " joined the chat ...");
-    })()
+// join the chat
+$("#liveChat").append("<span>" + currentUsername + "</span>" + " joined the chat ...")
+// display names for all current users
+
+    function displayNewUserName() {
+        var query = new Parse.Query('CurrentUser');
+        query.ascending('createdAt')
+        query.find({
+            success: function(result) {
+                for (var i = 0; i < result.length; i++) {
+                    //console.log(result[i].get('name'))
+                    $("#userList").append("<p><span>" + result[i].get('name') + "</span></p>");
+                    currentUserCounter++;
+                    userEnterTime = result[i].get('createdAt');
+
+                    // if(i==result.length-1){
+
+                    //     latestUser = result[i];
+
+                    // }
+                };
+            },
+            error: function(error) {
+
+            }
+        });
+        
+    };
+
+    displayNewUserName();
+    //check if there is new user in the chatroom, if yes, print to screen, if some one leave, reprint the list
+    function updateUser(){
+        var queryZero = new Parse.Query(CurrentUser);
+        queryZero.find({
+            success: function(result) {
+                
+                if(result.length<currentUserCounter){
+
+                    $("#userList").html('');
+                    currentUserCounter = 0;
+                    displayNewUserName();
+
+                    return;
+                }
+            },
+            error: function(error) {
+
+            }
+        });
+        var query = new Parse.Query(CurrentUser);
+        
+        query.greaterThan('createdAt', userEnterTime);
+        query.ascending('createdAt');
+        query.find({
+            success: function(result) {
+                if (result.length > 0) {
+                    for (var i = 0; i < result.length; i++) {
+                        
+                        $("#userList").append("<p><span>" + result[i].get('name') + "</span></p>");
+                        //reset lastest user
+                        userEnterTime = result[i].get('createdAt');
+
+                        currentUserCounter++;
+                    }
+                }
+            },
+            error: function(error) {
+                //nothing yet
+            }
+
+        })
+    }
 
     function getNewMessage() {
         var newMessage = {};
@@ -58,7 +142,11 @@ $(document).ready(function() {
     });
 
     // this displays the past history
-
+    $("textarea[name='message']").keypress(function(e) {
+        if (e.which === 13) {
+            $("#submitButton").click();
+        }
+    });
 
     $("#allChatHistory").click(function() {
         $(this).empty();
@@ -104,12 +192,20 @@ $(document).ready(function() {
 
     }
 
-    var intervalID = window.setInterval(getNewMessages, 500);
+    var intervalID = window.setInterval(
+        function(){
+            updateUser();
+            getNewMessages();
+        }, 500);
 
 
 
     // keep doing this in every second
-
+    //listener to window closing
+    $(window).bind("beforeunload", function() {
+        //destroy user when closing the window
+        newUser.destroy();
+    })
 
 
 });
