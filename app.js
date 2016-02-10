@@ -22,20 +22,20 @@ $(document).ready(function() {
     var newUser = new CurrentUser();
     newUser.set("name", currentUsername);
     newUser.save();
-    
-    
-    
+
+
+
     // a variable hold current number of user
     var currentUserCounter = 0;
     // a variable hold entertime
     var userEnterTime;;
-    
-    
 
-// This needs to be fixed
-// join the chat
-$("#liveChat").append("<span>" + currentUsername + "</span>" + " joined the chat ...")
-// display names for all current users
+
+
+    // This needs to be fixed
+    // join the chat
+    $("#liveChat").append("<span>" + currentUsername + "</span>" + " joined the chat ...")
+        // display names for all current users
 
     function displayNewUserName() {
         var query = new Parse.Query('CurrentUser');
@@ -59,17 +59,17 @@ $("#liveChat").append("<span>" + currentUsername + "</span>" + " joined the chat
 
             }
         });
-        
+
     };
 
     displayNewUserName();
     //check if there is new user in the chatroom, if yes, print to screen, if some one leave, reprint the list
-    function updateUser(){
+    function updateUser() {
         var queryZero = new Parse.Query(CurrentUser);
         queryZero.find({
             success: function(result) {
-                
-                if(result.length<currentUserCounter){
+
+                if (result.length < currentUserCounter) {
 
                     $("#userList").html('');
                     currentUserCounter = 0;
@@ -83,14 +83,14 @@ $("#liveChat").append("<span>" + currentUsername + "</span>" + " joined the chat
             }
         });
         var query = new Parse.Query(CurrentUser);
-        
+
         query.greaterThan('createdAt', userEnterTime);
         query.ascending('createdAt');
         query.find({
             success: function(result) {
                 if (result.length > 0) {
                     for (var i = 0; i < result.length; i++) {
-                        
+
                         $("#userList").append("<p><span>" + result[i].get('name') + "</span></p>");
                         //reset lastest user
                         userEnterTime = result[i].get('createdAt');
@@ -193,7 +193,7 @@ $("#liveChat").append("<span>" + currentUsername + "</span>" + " joined the chat
     }
 
     var intervalID = window.setInterval(
-        function(){
+        function() {
             updateUser();
             getNewMessages();
         }, 3000);
@@ -202,10 +202,15 @@ $("#liveChat").append("<span>" + currentUsername + "</span>" + " joined the chat
 
     // keep doing this in every second
     //listener to window closing
-    $(window).bind("beforeunload", function() {
-        //destroy user when closing the window
+    // $(window).bind("beforeunload", function() {
+    //     //destroy user when closing the window
+    //     newUser.destroy();
+    // })
+    $(window).on('beforeunload',function() {
+        
         newUser.destroy();
-    })
+        return "you want to leave?";
+    });
 
 
 });
