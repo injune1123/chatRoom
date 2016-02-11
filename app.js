@@ -196,7 +196,7 @@ $(document).ready(function() {
         function() {
             updateUser();
             getNewMessages();
-        }, 3000);
+        }, 1000);
 
 
 
